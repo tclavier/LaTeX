@@ -13,6 +13,8 @@
 %\RequirePackage{eurofont}  %Saisir €
 \RequirePackage{eurosym}  %\euro{} \EUR{12} 
 \RequirePackage{xstring}  
+\RequirePackage{graphics}
+
 
 \def\TVA{19.6}	% Taux de la TVA, 0 pour les auto-entrepreneur
 %\def\DevisNum{\StrBefore{\jobname}{\textunderscore}} %Si les fichiers sont de la forme NUM-DEVIS_blabla
@@ -27,10 +29,21 @@
 \newcommand{\societe}[1]{ \def\Societe{#1} } 
 \newcommand{\client}[1]{ \def\Client{#1} }
 
+\newcommand{\rib}[4]{%
+	\def\RibBanque{#1}
+	\def\RibGuichet{#2}
+	\def\RibCompte{#3}
+	\def\RibCle{#4}
+}
+
+\newcommand{\iban}[1]{ \def\Iban{#1} }
+\newcommand{\bic}[1]{ \def\Bic{#1} }
+
+
 \newcommand{\devis}{%
 	\parbox[b]{0.4\textwidth}{\Societe}\hfill
 	\parbox[b]{0.4\textwidth}{
-		\colorbox{LightButter}{
+		\colorbox{LightOrange}{
 			\begin{minipage}{0.35\textwidth}
 				\begin{center}
 					{\Large \textbf{Devis \no: \DevisNum}}\\
@@ -54,7 +67,7 @@
 
 	\textnormal{\DevisDescr}
 
-	\vspace*{0.5cm}
+	\vspace*{0.3cm}
 
 	\begin{center}
 	  \begin{tabular}{p{8cm} c c r}
@@ -64,7 +77,7 @@
 		\end{tabular}
 	\end{center}
 
-	\vspace*{0.5cm}
+	\vspace*{0.2cm}
 	Devis valable 1 mois à compter de sa date d'émission. Toute modification de
 	quelque nature que ce soit est susceptible d'entraîner une mise à jour de ce
 	devis.
@@ -76,14 +89,14 @@
 	Pour toute commande de votre part, merci de me retourner le double de ce devis signé.
  }
 
-	\vspace*{0.5cm}
+	\vspace*{0.3cm}
 
 	\begin{minipage}{0.35\textwidth}
 		Bon pour accord le :\\
 		Signature
 	\end{minipage}
 
-	\vspace*{2cm}
+	\vspace*{1.5cm}
 	{\tiny
 	Le paiement sera à effectuer au plus tard au trentième jour suivant la date de réception de la facture (cf : c. com. art L.  441-6, al.2 modifié de la loi du 15 mai 2001). En cas de retard de paiement, une pénalité fixée à 15\% du montant total de la facture, par mois de retard entamé, est exigible sans rappel le jour suivant la date limite de règlement. Mention obligatoire. Lutte contre les retards de paiement / Article 53 de la Loi NRE.}
 

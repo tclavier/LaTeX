@@ -3,32 +3,31 @@
 \ProvidesPackage{facture}[2010/11/23]
 
 \RequirePackage{units}
-\RequirePackage{bera}
-\RequirePackage{graphicx}
 \RequirePackage{fancyhdr}
 \RequirePackage{fp}
 \RequirePackage[french]{babel}
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[a4paper]{geometry}
+\RequirePackage{tango}
+%\RequirePackage{eurofont}  %Saisir €
+\RequirePackage{eurosym}  %\euro{} \EUR{12} 
+\RequirePackage{xstring}
+\RequirePackage{graphics}
+\RequirePackage{longtable}
 
 \def\TVA{19.6}	% Taux de la TVA, 0 pour les auto-entrepreneur
+\def\RibBanque{nean}
+
+\def\FactureNum{\StrLeft{\jobname}{6}}
 
 \def\TotalHT{0}
 \def\TotalTVA{0}
 \def\NetAPayer{0}
 
-\newcommand{\tva}[1]{% Arguments : taux
-	\def\TVA{#1}
-}
-
-\newcommand{\societe}[1]{%
-	\def\Societe{#1}
-}
-
-\newcommand{\client}[1]{%
-	\def\Client{#1}
-}
+\newcommand{\tva}[1]{ \def\TVA{#1} } 
+\newcommand{\societe}[1]{ \def\Societe{#1} } 
+\newcommand{\client}[1]{ \def\Client{#1} }
 
 \newcommand{\rib}[4]{%
 	\def\RibBanque{#1}
@@ -37,28 +36,30 @@
 	\def\RibCle{#4}
 }
 
-\newcommand{\iban}[1]{
-	\def\Iban{#1}
-}
-
-\newcommand{\bic}[1]{
-	\def\Bic{#1}
-}
+\newcommand{\iban}[1]{ \def\Iban{#1} }
+\newcommand{\bic}[1]{ \def\Bic{#1} }
 
 \newcommand{\facture}{%
-	%\includegraphics[width=2cm]{logo.png}
-	\Societe
-	\\
-	Facture \no: \FactureNum \\
+	\parbox[b]{0.4\textwidth}{\Societe}\hfill
+	\parbox[b]{0.4\textwidth}{
+		\colorbox{LightOrange}{
+			\begin{minipage}{0.4\textwidth}
+			\begin{center}
+			{\Large \textbf{Facture \no: \FactureNum}}\\
+			\FactureLieu, le \today \\ 
+				\end{center}
+			\end{minipage}
+		}
+	}
 
-	{\addtolength{\leftskip}{10.5cm} %in ERT
+	\vspace*{1.5cm}
+	{\addtolength{\leftskip}{9.5cm} %in ERT
 		  \Client\\
 
 	} %in ERT
 
 
 	\hspace*{10.5cm}
-	\FactureLieu, le \today
 	
 	\vspace*{2.5cm}
 	\textbf{Objet : \FactureObjet \\}
@@ -69,7 +70,7 @@
 
 	\begin{center}
 	  \begin{tabular}{p{8cm} c c r}
-		  \textbf{Désignation} & \textbf{Prix unitaire}  & \textbf{Quantité} & \textbf{Montant (EUR)}  \\
+		  \textbf{Désignation} & \textbf{Prix unitaire}  & \textbf{Quantité} & \textbf{Montant}  \\
 		  \hline
 			\AfficheResultat{}
 		\end{tabular}
@@ -81,19 +82,23 @@
 		Facture acquittée.
 	}{
 
-		À régler par chèque ou par virement bancaire :
+		\ifthenelse{\equal{\RibBanque}{nean}}{
+			À régler par chèque 
+		}{
+			À régler par chèque ou par virement bancaire :
 
 		\begin{center}
 			\begin{tabular}{|c c c c|}
 				\hline 
 				\textbf{Code banque} & \textbf{Code guichet} & \textbf{\No de Compte} & \textbf{Clé RIB}  \\
 				\RibBanque           & \RibGuichet           & \RibCompte             & \RibCle           \\
-				\hline \textbf{IBAN N°}    & \multicolumn{3}{|l|}{\Iban}    \\
+				\hline \textbf{IBAN \No}    & \multicolumn{3}{|l|}{\Iban}    \\
 				\hline \textbf{Code BIC}   & \multicolumn{3}{|l|}{\Bic }     \\
 				\hline
 			\end{tabular}
 		\end{center}
 
+		}
 	}
 
 }
@@ -104,14 +109,18 @@
 	\FPround{\montant}{\montant}{2}
 	\FPadd{\TotalHT}{\TotalHT}{\montant}
 	
-	\eaddto\ListeProduits{#1	&	\prix	&	#2	&	\montant	\cr}
+	\ifthenelse{\equal{\montant}{0.00}}{
+		\eaddto\ListeProduits{#1	&	offert	&	#2	&	offert \cr}
+	}{
+		\eaddto\ListeProduits{#1	&	\prix	&	#2	&	\montant \cr}
+	}
 }
 
 \newcommand{\AjouterAcompte}[2]{%	Arguments : Désignation, montant de l'acompte reçu donc TTC
 	\FPround{\prix}{#2}{2}
 	\FPsub{\NetAPayer}{\NetAPayer}{\prix}
 	
-	\eaddto\ListeAcompte{#1	&	& &	-\prix	\cr}
+  \eaddto\ListeAcompte{#1	&	& &	-\prix \cr}
 }
 
 \newcommand{\AfficheResultat}{%
@@ -130,29 +139,31 @@
 	\global\let\NetAPayer\NetAPayer
 	
 	\cr \hline
-	Total HT			& & &	\TotalHT	\cr
+	Total HT			& & &	\TotalHT~\euro \cr
 	\ifthenelse{\equal{\TVA}{0}}{
 		\cr \omit \span TVA non applicable, art. 293 B du code des impôts. \cr \cr
 	}{
 		TVA \TVA~\% 		& & &	\TotalTVA	\cr
 	}
 	\hline \hline
-	\textbf{Total TTC}	& & &	\TotalTTC \cr \cr
+	& \omit \span \textbf{Total TTC}	&	\TotalTTC~\euro \cr
 	\ifthenelse{\equal{\FactureAcquittee}{non}}{
+		& & & \cr
 		\ListeAcompte
 		\hline \hline
-		\textbf{Net à payer}	& & &	\NetAPayer \cr
+		& \omit \span \textbf{Net à payer} &	\NetAPayer \euro \cr
 	}
 }
 
 \newcommand*\eaddto[2]{% version développée de \addto
    \edef\tmp{#2}%
-   \expandafter\addto
+   \expandafter\addto%
    \expandafter#1%
    \expandafter{\tmp}%
 } 
 
 \newcommand{\ListeProduits}{}
+\newcommand{\ListeAcompte}{}
 
 
 \geometry{verbose,tmargin=4em,bmargin=8em,lmargin=6em,rmargin=6em}
@@ -166,3 +177,5 @@
 \renewcommand{\headrulewidth}{0pt}
 
 \endinput
+%" vim:syntax=tex ts=2 
+
