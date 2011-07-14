@@ -18,7 +18,7 @@
 
 \def\TVA{19.6}	% Taux de la TVA, 0 pour les auto-entrepreneur
 %\def\DevisNum{\StrBefore{\jobname}{\textunderscore}} %Si les fichiers sont de la forme NUM-DEVIS_blabla
-\def\DevisNum{\StrLeft{\jobname}{6}} %Si les fichiers sont de la forme YYYY-NN
+\def\DevisNum{\StrLeft{\jobname}{7}} %Si les fichiers sont de la forme YYYY-NN
 
 \def\TotalHT{0}
 \def\TotalTVA{0}
@@ -28,6 +28,7 @@
 \newcommand{\tva}[1]{ \def\TVA{#1} } 
 \newcommand{\societe}[1]{ \def\Societe{#1} } 
 \newcommand{\client}[1]{ \def\Client{#1} }
+\newcommand{\basdepage}[1]{ \cfoot{{\rule{\linewidth}{.5pt}\\#1} }}
 
 \newcommand{\rib}[4]{%
 	\def\RibBanque{#1}
@@ -38,7 +39,6 @@
 
 \newcommand{\iban}[1]{ \def\Iban{#1} }
 \newcommand{\bic}[1]{ \def\Bic{#1} }
-
 
 \newcommand{\devis}{%
 	\parbox[b]{0.4\textwidth}{\Societe}\hfill
@@ -51,18 +51,15 @@
 				\end{center}
 			\end{minipage}
 		}
+		\vspace*{1cm}
 	}
 
-	\vspace*{1.5cm}
-	{\addtolength{\leftskip}{10.5cm} %in ERT
+	{\addtolength{\leftskip}{9.5cm} %in ERT
 		  \Client\\
 
 	} %in ERT
 
-
-	\hspace*{10.5cm}
-	
-	\vspace*{2.5cm}
+	\vspace*{1cm}
 	\textbf{Objet : \DevisObjet \\}
 
 	\textnormal{\DevisDescr}
@@ -150,7 +147,7 @@
 \newcommand{\ListeProduits}{}
 
 
-\geometry{verbose,tmargin=4em,bmargin=8em,lmargin=6em,rmargin=6em}
+\geometry{verbose,tmargin=4em,bmargin=6em,lmargin=6em,rmargin=6em}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 
