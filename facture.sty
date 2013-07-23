@@ -24,8 +24,6 @@
 \def\TotalHT{0}
 \def\TotalTVA{0}
 \def\NetAPayer{0}
-\def\TotalAvoirHT{0}
-\def\TotalAvoirTVA{0}
 
 \newcommand{\tva}[1]{ \def\TVA{#1} } 
 \newcommand{\societe}[1]{ \def\Societe{#1} } 
@@ -49,7 +47,7 @@
 			\begin{minipage}{0.4\textwidth}
 			\begin{center}
 			{\Large \textbf{Facture \no: \FactureNum}}\\
-			\FactureLieu, le 29 mai 2013 \\ 
+			\FactureLieu, le \today \\ 
 				\end{center}
 			\end{minipage}
 		}
@@ -117,19 +115,6 @@
 	}
 }
 
-\newcommand{\AjouterAvoir}[3]{%	Arguments : Désignation, quantité, prix unitaire HT
-	\FPround{\prix}{#3}{2}
-	\FPeval{\montant}{#2 * #3}
-	\FPround{\montant}{\montant}{2}
-	\FPadd{\TotalAvoirHT}{\TotalAvoirHT}{\montant}
-	
-	\ifthenelse{\equal{\montant}{0.00}}{
-		\eaddto\ListeAvoirs{#1	&	offert	&	#2	&	offert \cr}
-	}{
-		\eaddto\ListeAvoirs{#1	&	\prix	&	#2	&	-\montant \cr}
-	}
-}
-
 \newcommand{\AjouterAcompte}[2]{%	Arguments : Désignation, montant de l'acompte reçu donc TTC
 	\FPround{\prix}{#2}{2}
 	\FPsub{\NetAPayer}{\NetAPayer}{\prix}
@@ -141,21 +126,14 @@
 	\ListeProduits
 	
 	\FPeval{\TotalTVA}{\TotalHT * \TVA / 100}
-	\FPeval{\TotalAvoirTVA}{\TotalAvoirHT * \TVA / 100}
 	\FPadd{\TotalTTC}{\TotalHT}{\TotalTVA}
 	\FPadd{\NetAPayer}{\NetAPayer}{\TotalTTC}
-	\FPsub{\NetAPayer}{\NetAPayer}{\TotalAvoirHT}
-	\FPsub{\NetAPayer}{\NetAPayer}{\TotalAvoirTVA}
 	\FPround{\TotalHT}{\TotalHT}{2}
-	\FPround{\TotalAvoirHT}{\TotalAvoirHT}{2}
 	\FPround{\TotalTVA}{\TotalTVA}{2}
-	\FPround{\TotalAvoirTVA}{\TotalAvoirTVA}{2}
 	\FPround{\TotalTTC}{\TotalTTC}{2}
 	\FPround{\NetAPayer}{\NetAPayer}{2}
 	\global\let\TotalHT\TotalHT
-	\global\let\TotalAvoirHT\TotalAvoirHT
 	\global\let\TotalTVA\TotalTVA
-	\global\let\TotalAvoirTVA\TotalAvoirTVA
 	\global\let\TotalTTC\TotalTTC
 	\global\let\NetAPayer\NetAPayer
 	
@@ -171,16 +149,6 @@
 	\ifthenelse{\equal{\FactureAcquittee}{non}}{
 		& & & \cr
 		\ListeAcompte
-    \ListeAvoirs
-    \ifthenelse{\equal{\TotalAvoirHT}{0}}{
-    }{
-      \cr \hline
-      Total Avoir HT			& & &	-\TotalAvoirHT~\euro \cr
-      \ifthenelse{\equal{\TVA}{0}}{
-      }{
-        TVA \TVA~\% 		& & &	-\TotalAvoirTVA	\cr
-      }
-    }
 		\hline \hline
 		& \omit \span \textbf{Net à payer} &	\NetAPayer \euro \cr
 	}
