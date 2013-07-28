@@ -28,7 +28,8 @@
 \newcommand{\tva}[1]{ \def\TVA{#1} } 
 \newcommand{\societe}[1]{ \def\Societe{#1} } 
 \newcommand{\client}[1]{ \def\Client{#1} }
-\newcommand{\basdepage}[1]{ \cfoot{{\rule{\linewidth}{.5pt}\\#1} }}
+\renewcommand{\footrulewidth}{0.5pt}
+\newcommand{\basdepage}[1]{\cfoot{#1}}
 
 \newcommand{\rib}[4]{%
 	\def\RibBanque{#1}
