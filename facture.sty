@@ -16,7 +16,7 @@
 \RequirePackage{graphics}
 \RequirePackage{longtable}
 
-\def\TVA{19.6}	% Taux de la TVA, 0 pour les auto-entrepreneur
+\def\TVA{20}	% Taux de la TVA, 0 pour les auto-entrepreneur
 \def\RibBanque{nean}
 
 \def\FactureNum{\StrLeft{\jobname}{7}}
@@ -47,7 +47,13 @@
 		\colorbox{LightOrange}{
 			\begin{minipage}{0.4\textwidth}
 			\begin{center}
-			{\Large \textbf{Facture \no: \FactureNum}}\\
+			{\Large 
+        \textbf{
+          Facture 
+          \ifthenelse{\equal{\FactureAvoir}{oui}}{
+            d'avoir
+          }
+          \no: \FactureNum}}\\
 			\FactureLieu, le \today \\ 
 				\end{center}
 			\end{minipage}
@@ -81,24 +87,28 @@
 		Facture acquittée.
 	}{
 
-		\ifthenelse{\equal{\RibBanque}{nean}}{
-			À régler par chèque 
-		}{
-			À régler par chèque ou par virement bancaire :
+    \ifthenelse{\equal{\FactureAvoir}{oui}}{
 
-    \small
-		\begin{center}
-			\begin{tabular}{|c c c c|}
-				\hline 
-				\textbf{Code banque} & \textbf{Code guichet} & \textbf{\No de Compte} & \textbf{Clé RIB}  \\
-				\RibBanque           & \RibGuichet           & \RibCompte             & \RibCle           \\
-				\hline \textbf{IBAN \No}    & \multicolumn{3}{|l|}{\Iban}    \\
-				\hline \textbf{Code BIC}   & \multicolumn{3}{|l|}{\Bic }     \\
-				\hline
-			\end{tabular}
-		\end{center}
+    }{ 
+      \ifthenelse{\equal{\RibBanque}{nean}}{
+        À régler par chèque 
+      }{
+        À régler par chèque ou par virement bancaire :
 
-		}
+      \small
+      \begin{center}
+        \begin{tabular}{|c c c c|}
+          \hline 
+          \textbf{Code banque} & \textbf{Code guichet} & \textbf{\No de Compte} & \textbf{Clé RIB}  \\
+          \RibBanque           & \RibGuichet           & \RibCompte             & \RibCle           \\
+          \hline \textbf{IBAN \No}    & \multicolumn{3}{|l|}{\Iban}    \\
+          \hline \textbf{Code BIC}   & \multicolumn{3}{|l|}{\Bic }     \\
+          \hline
+        \end{tabular}
+      \end{center}
+
+      }
+    }
 	}
 
 }
@@ -151,7 +161,13 @@
 		& & & \cr
 		\ListeAcompte
 		\hline \hline
-		& \omit \span \textbf{Net à payer} &	\NetAPayer \euro \cr
+		& \omit \span 
+    \ifthenelse{\equal{\FactureAvoir}{oui}}{
+      \textbf{Net à votre crédit}
+    } {
+      \textbf{Net à payer} 
+    }
+    &	\NetAPayer \euro \cr
 	}
 }
 
