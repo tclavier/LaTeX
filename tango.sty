@@ -4,6 +4,8 @@
 
 \RequirePackage{color}
 \RequirePackage{titlesec}
+\RequirePackage{listings}
+\RequirePackage{hyperref}
 
 % COLORS (Tango)
 \definecolor{LightButter}{rgb}{0.98,0.91,0.31}
@@ -41,6 +43,26 @@
 
 \titleformat{\subsection}
 {\color{DarkSkyBlue}\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+{\color{DarkChameleon}\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+\lstnewenvironment{Verbatim}{%
+  \color{Aluminium6}
+  \leftskip1cm
+  \lstset{backgroundcolor=\color{Aluminium1},
+    frame=single,
+    framerule=0pt,
+    basicstyle=\footnotesize\ttfamily,
+    keywordstyle=\color{DarkChocolate},
+    columns=fullflexible
+  }}{}
+
+\hypersetup{colorlinks=true,
+  linkcolor=Aluminium6,
+  citecolor=green,
+  filecolor=magenta,
+  urlcolor=DarkChocolate}
 
 \endinput
 
