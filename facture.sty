@@ -110,6 +110,10 @@
       }
     }
 	}
+    {\tiny
+      Le paiement est à effectuer au plus tard au trentième jour suivant la date de réception de la facture (cf : c. com. art L.  441-6, al.2 modifié de la loi du 15 mai 2001). En cas de retard de paiement, une pénalité fixée à 15\% du montant total de la facture, par mois de retard entamé, est exigible sans rappel le jour suivant la date limite de règlement. Mention obligatoire. Lutte contre les retards de paiement / Article 53 de la Loi NRE.
+    \par %Pour forcer le calcul de l'interligne
+  }
 
 }
 
@@ -119,7 +123,7 @@
 	\FPround{\montant}{\montant}{2}
 	\FPadd{\TotalHT}{\TotalHT}{\montant}
 	
-	\ifthenelse{\equal{\montant}{0.00}}{
+	\ifthenelse{\equal{\prix}{0.00}}{
 		\eaddto\ListeProduits{#1	&	offert	&	#2	&	offert \cr}
 	}{
 		\eaddto\ListeProduits{#1	&	\prix	&	#2	&	\montant \cr}
